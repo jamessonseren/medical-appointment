@@ -1,7 +1,8 @@
-import { Specialty } from "../../entities/specialty.entity"
+import { CustomError } from "../../../../errors/custom.error"
+import { SpecialtyEntity } from "../../entities/specialty.entity"
 import { ISpecialtyRepository } from "../../repositories/specialty.repository"
 
-type SpecialityRequety = {
+type SpecialtyRequest = {
     name: string
     description: string
 }
@@ -9,11 +10,17 @@ type SpecialityRequety = {
 export class CreateSpecialtyUseCase {
     constructor(private specialtyRepository: ISpecialtyRepository){}
 
-    async execute(data: SpecialityRequety){
+    async execute(data: SpecialtyRequest){
 
-        const specialty = new Specialty(data)
+        const specialty = SpecialtyEntity.create(data)
+
+        const specialtyExists = await this.specialtyRepository.findBySpecialtyName(data.name)
+        if(specialtyExists) throw new CustomError("Specialty already registered", 400, "ERROR")
 
         const specialtyCreated = await this.specialtyRepository.save(specialty)
+
+        console.log("passou pelo repositório")
+
 
         return specialtyCreated
     }

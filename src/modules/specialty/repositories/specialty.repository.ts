@@ -1,5 +1,7 @@
-import { Specialty } from "../entities/specialty.entity"
+import { SpecialtyEntity } from "../entities/specialty.entity"
 
 export interface ISpecialtyRepository{
-    save(data: Specialty): Promise<Specialty>
+    findBySpecialtyName(name: string): Promise<SpecialtyEntity | null>
+    save(data: SpecialtyEntity): Promise<SpecialtyEntity>
+    findById(id: string): Promise<SpecialtyEntity | null>
 }

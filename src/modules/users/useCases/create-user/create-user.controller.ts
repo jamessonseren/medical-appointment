@@ -6,14 +6,14 @@ import { IPasswordCrypto } from "../../../../infra/shared/crypto/password.crypto
 
 export class CreateUserController{
 
-    constructor(private userRepository: IUserRepository, private passwordCrypto: IPasswordCrypto){}
+    constructor(private userRepository: IUserRepository){}
     
     async handle(req: Request, res: Response){
 
         try{
             const data = req.body
     
-            const useCase = new CreateUserUseCase(this.userRepository, this.passwordCrypto)
+            const useCase = new CreateUserUseCase(this.userRepository)
     
             const result = await useCase.execute(data)
     
