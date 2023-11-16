@@ -1,4 +1,5 @@
 import { CustomError } from "../../../../errors/custom.error"
+import { DoctorInfoEntity } from "../../entities/doctor-info.entity"
 import { IDoctorRepository } from "../../repositories/doctor.repository"
 
 export type DoctorInfoRequest = {
@@ -7,14 +8,21 @@ export type DoctorInfoRequest = {
     price: number
     duration: number
 }
-export class CreateDoctorInfoUseCase{
+export class CreateDoctorInfoUseCase {
 
-    constructor(private doctorRepository: IDoctorRepository){}
+    constructor(private doctorRepository: IDoctorRepository) { }
 
-    async execute(data: DoctorInfoRequest, userId: string){
+    async execute(data: DoctorInfoRequest, userId: string) {
 
-       const doctorByUserID = await this.doctorRepository.findByUserId(userId)
+        const doctorByUserID = await this.doctorRepository.findByUserId(userId)
+        
+        if (!doctorByUserID) throw new CustomError("Doctor does not exist")
 
-       if(!doctorByUserID) throw new CustomError("Doctor does not exist")
+        const doctorInfo = DoctorInfoEntity.create({
+            ...data,
+            doctorId: doctorByUserID.id
+        })
+
+        return doctorInfo
     }
 }
